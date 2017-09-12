@@ -11,7 +11,7 @@ class DATABASE(object):
 
 class SPIDERSETTING(object):
     Weibo_Timeline_Spider = {
-        'ITEM_PIPELINES' : {'sina_spider.pipelines.TweetsItemPipeline': 300}
+        'ITEM_PIPELINES' : {'sina_spider.pipelines.TweetsTimelineItemPipeline': 300}
     }
 
     Weibo_Hotpoint_Spider = {
@@ -19,5 +19,5 @@ class SPIDERSETTING(object):
     }
 
     Weibo_PersonPage_Spider = {
-        'ITEM_PIPELINES' : {'sina_spider.pipelines.TweetsItemPipeline': 300}
+        'ITEM_PIPELINES' : {'sina_spider.pipelines.TweetsPersonPageItemPipeline': 300}
     }

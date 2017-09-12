@@ -25,13 +25,14 @@ class Weibo_Timeline_Spider(scrapy.Spider):
                     meta={'cookiejar': 1}, callback=self.parse_get_mutiUrls)
 
     def parse_get_mutiUrls(self, response):
+        self.parse_get_item_inf(response)
         try:
             base_num = int(response.url.split('=')[1])
         except:
             base_num = 0
         next_url = response.url.split('?')[0]+'?page={}'
-        for page_num in range(10):
-            yield scrapy.Request(next_url.format(base_num + page_num + 1), meta={'cookiejar': 1}, callback=self.parse_get_item_inf)
+        for page_num in range(1, 10):
+            yield scrapy.Request(next_url.format(base_num + page_num), meta={'cookiejar': 1}, callback=self.parse_get_item_inf)
         yield scrapy.Request(next_url.format(base_num + 10), meta={'cookiejar': 1}, callback=self.parse_get_mutiUrls)
 
     def parse_get_item_inf(self, response):

@@ -13,3 +13,6 @@ HotTopicItems.jl
 TweetsItems.jl
 ghostdriver.log
 .gitignore
+.vscode/*
+TweetsItemsPersonPage.jl
+TweetsItemsTimeline.jl

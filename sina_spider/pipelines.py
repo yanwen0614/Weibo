@@ -7,10 +7,25 @@
 import json
 
 
-class TweetsItemPipeline(object):
+class TweetsTimelineItemPipeline(object):
 
     def open_spider(self, spider):
-        self.file = open('TweetsItems.jl', 'w', encoding='utf-8')
+        self.file = open('TweetsItemsTimeline.jl', 'w', encoding='utf-8')
+
+    def close_spider(self, spider):
+        self.file.close()
+
+    def process_item(self, item, spider):
+        line = json.dumps(dict(item), ensure_ascii=False, sort_keys=True) + "\n"
+        self.file.write(line,)
+        self.file.flush()
+        return item
+
+
+class TweetsPersonPageItemPipeline(object):
+
+    def open_spider(self, spider):
+        self.file = open('TweetsItemsPersonPage.jl', 'w', encoding='utf-8')
 
     def close_spider(self, spider):
         self.file.close()
