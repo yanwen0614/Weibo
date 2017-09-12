@@ -4,7 +4,6 @@ data/cookies
 *.pyc
 .gitignore
 sina_spider/data/cookies
-sina_spider/utils/phantomjs.exe
 sina_spider/utils/userlist
 sina_spider/utils/user.py
 scrapy.cfg
@@ -16,3 +15,5 @@ ghostdriver.log
 .vscode/*
 TweetsItemsPersonPage.jl
 TweetsItemsTimeline.jl
+sina_spider/utils/phantomjs.exe
+.gitignore

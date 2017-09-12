@@ -2,7 +2,14 @@ class UserSet(object):
     _user_set = set()
 
     def __init__(self):
-        self.add_user(username , password)  # add your account information
+        f = open('.\\sina_spider\\utils\\userlist', encoding='UTF-8')
+        for line in f.readlines():
+            self.add_user(*line[:-1].rsplit(' '))  
+            '''add your account information at userlist file 
+            like this :
+            username1 password1
+            username2 password2
+            '''
        
 
     @property
