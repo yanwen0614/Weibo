@@ -58,7 +58,7 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
         for statuse in statuses:
             if statuse['card_type'] != 9:
                 continue
-            yield Request(statuse['scheme'], meta={'cookiejar': 1}, callback=self.parse_Tweets)
+            yield Request(statuse['scheme'],cookies=None ,callback=self.parse_Tweets)
         yield Request(next_url, meta={'cookiejar': 1}, callback=self.parse_get_follower_Tweets)  # next page
     
     def parse_Tweets(self, response):
@@ -76,5 +76,4 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
         item['Context'] = statuse['text']
         item['Author'] = statuse['user']['screen_name']
         item['Source'] = statuse['source']
-        sleep(randint)
         yield item
