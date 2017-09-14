@@ -76,5 +76,4 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
         item['Context'] = statuse['text']
         item['Author'] = statuse['user']['screen_name']
         item['Source'] = statuse['source']
-        sleep(randint)
         yield item
