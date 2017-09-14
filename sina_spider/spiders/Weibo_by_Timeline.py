@@ -1,12 +1,13 @@
 import json
 from time import sleep
+
 import scrapy
 from scrapy.http import Request
 
+from ..conf import SPIDERSETTING
 from ..items import TweetsItem
 from ..utils.cookies import Cookies
 from ..utils.user import UserSet
-from ..conf import SPIDERSETTING
 
 
 class Weibo_Timeline_Spider(scrapy.Spider):
@@ -15,43 +16,41 @@ class Weibo_Timeline_Spider(scrapy.Spider):
     custom_settings = SPIDERSETTING.Weibo_Timeline_Spider
 
     def __init__(self):
+        super().__init__()
         self.cookies = Cookies()
 
     def start_requests(self):
-        username = '13072781826'
+        username = str(SPIDERSETTING.Weibo_Timeline_Spider_login_user)
         for start_url in self.start_urls:
             yield Request(start_url,
                     cookies=self.cookies.getCookies(username),
-                    meta={'cookiejar': 1}, callback=self.parse_get_mutiUrls)
+                    meta={'cookiejar': 1}, callback=self.parse_get_page)
 
-    def parse_get_mutiUrls(self, response):
-        self.parse_get_item_inf(response)
+    def parse_get_page(self, response):
         try:
-            base_num = int(response.url.split('=')[1])
+            base_num = int(response.url.split('=')[-1])
         except:
-            base_num = 0
+            base_num = 1
         next_url = response.url.split('?')[0]+'?page={}'
-        for page_num in range(1, 10):
-            yield scrapy.Request(next_url.format(base_num + page_num), meta={'cookiejar': 1}, callback=self.parse_get_item_inf)
-        yield scrapy.Request(next_url.format(base_num + 10), meta={'cookiejar': 1}, callback=self.parse_get_mutiUrls)
-
-    def parse_get_item_inf(self, response):
         jsondata = json.loads(response.body.decode('utf-8'))
-        statuses = jsondata['statuses']
+        if jsondata['statuses'] == False:
+            return
+        for statuse in jsondata['statuses']:
+            yield self.parse_get_item_inf(statuse)
+        '''for page_num in range(1, 10):
+        # yield scrapy.Request(next_url.format(base_num + 1), meta={'cookiejar': 1}, callback=self.parse_get_item_inf) '''
+        yield scrapy.Request(next_url.format(base_num + 1), meta={'cookiejar': 1}, callback=self.parse_get_page)  # next page
 
-        'To do detect whether reach the end of timeline stastues'
-
-        for statuse in statuses:
-            item = TweetsItem()            
-            item['Id'] = statuse['id']
-            try:
-                item['Title'] = statuse['page_info']['page_title']
-            except:
-                item['Title'] = ''
-            item['Create_time'] = statuse['created_at']
-            item['Context'] = statuse['text']
-            item['Author'] = statuse['user']['screen_name']
-            item['Source'] = statuse['source']
-            yield item
-        del jsondata
+    def parse_get_item_inf(self, statuse):
+        item = TweetsItem()
+        item['Id'] = statuse['id']
+        try:
+            item['Title'] = statuse['page_info']['page_title']
+        except KeyError:
+            item['Title'] = ''
+        item['Create_time'] = statuse['created_at']
+        item['Context'] = statuse['text']
+        item['Author'] = statuse['user']['screen_name']
+        item['Source'] = statuse['source']
+        return item
 

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-import scrapy
 import json
 from time import sleep
+
 import scrapy
 from scrapy.http import Request
-from ..items import TopicItem
+
 from ..conf import SPIDERSETTING
+from ..items import TopicItem
 
 
 class Weibo_Hotpoint_Spider(scrapy.Spider):
     name = 'Weibo_by_Hotpoint'
-    start_urls = ['https://m.weibo.cn/api/container/getIndex?containerid=100803'] # Hot topic of weibo list 
+    start_urls = ['https://m.weibo.cn/api/container/getIndex?containerid=100803']  # Hot topic of weibo list
     topics_api_base_url = 'https://m.weibo.cn/api/container/getIndex?'
     custom_settings = SPIDERSETTING.Weibo_Hotpoint_Spider
 
@@ -39,8 +40,7 @@ class Weibo_Hotpoint_Spider(scrapy.Spider):
             yield item
             if self.check_emergency(item['Title']):
                 redirect = self.topics_api_base_url + hot_topic['scheme'].split('?')[1]
-                yield Request(redirect ,callback=self.parse_topic_status)
-
+                yield Request(redirect, callback=self.parse_topic_status)
 
     def parse_unlogin(self, response):
         jsondata = json.loads(response.body.decode('utf-8'))
@@ -54,10 +54,9 @@ class Weibo_Hotpoint_Spider(scrapy.Spider):
         yield Request(response.url+"&page=2", callback=self.parse)
         yield Request(response.url+"&page=3", callback=self.parse)
 
-
     def parse_topic_status(self):
         pass
 
-    def check_emergency(self,title):
+    def check_emergency(self, title):
         # to do
         return False
