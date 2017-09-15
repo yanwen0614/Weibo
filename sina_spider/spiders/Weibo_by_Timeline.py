@@ -4,10 +4,10 @@ from time import sleep
 import scrapy
 from scrapy.http import Request
 
-from ..conf import SPIDERSETTING
-from ..items import TweetsItem
-from ..utils.cookies import Cookies
-from ..utils.user import UserSet
+from sina_spider.conf import SPIDERSETTING
+from sina_spider.items import TweetsItem
+from sina_spider.utils.cookies import Cookies
+from sina_spider.utils.user import UserSet
 
 
 class Weibo_Timeline_Spider(scrapy.Spider):

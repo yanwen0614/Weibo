@@ -5,9 +5,9 @@ from lxml import etree
 import re
 from scrapy.http import Request
 
-from ..conf import SPIDERSETTING
-from ..items import TweetsItem
-from ..utils.cookies import Cookies
+from sina_spider.conf import SPIDERSETTING
+from sina_spider.items import TweetsItem
+from sina_spider.utils.cookies import Cookies
 
 class Weibo_PersonPage_Spider(scrapy.Spider):
     name = "Weibo_by_PersonPage"

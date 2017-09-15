@@ -5,8 +5,8 @@ from time import sleep
 import scrapy
 from scrapy.http import Request
 
-from ..conf import SPIDERSETTING
-from ..items import TopicItem
+from sina_spider.conf import SPIDERSETTING
+from sina_spider.items import TopicItem
 
 
 class Weibo_Hotpoint_Spider(scrapy.Spider):
