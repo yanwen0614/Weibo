@@ -17,3 +17,4 @@ TweetsItemsPersonPage.jl
 TweetsItemsTimeline.jl
 sina_spider/utils/phantomjs.exe
 .gitignore
+example

@@ -1,5 +1,6 @@
 import time
 import pickle
+import logging
 
 from selenium import webdriver
 
@@ -8,6 +9,7 @@ from sina_spider.utils.user import UserSet
 
 class Cookies(object):
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
         self._cookies = dict()
         try:
             with open('.\sina_spider\data\cookies', 'rb') as f:
@@ -19,7 +21,7 @@ class Cookies(object):
 
 
     def _updateCookies(self):
-        print('update cookies')
+        self.logger.info('update cookies')
         for user in UserSet().user_set:
                 self._getLoginCookies(*user)
         Cookiestime = time.time()
