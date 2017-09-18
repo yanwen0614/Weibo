@@ -19,7 +19,8 @@ class SPIDERSETTING(object):
     }
 
     Weibo_PersonPage_Spider = {
-        'ITEM_PIPELINES' : {'sina_spider.pipelines.TweetsPersonPageItemPipeline': 300}
+        'ITEM_PIPELINES' : {'sina_spider.pipelines.TweetsPersonPageItemPipeline': 300},
+        'LOG_LEVEL' : 'INFO'
     }
 
     Weibo_Timeline_Spider_login_user = 18515393545
