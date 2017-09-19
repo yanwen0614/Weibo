@@ -8,6 +8,7 @@ from scrapy.http import Request
 from sina_spider.conf import SPIDERSETTING
 from sina_spider.items import TweetsItem
 from sina_spider.utils.cookies import Cookies
+from sina_spider.utils.timeconvert import utc2datetime
 
 class Weibo_PersonPage_Spider(scrapy.Spider):
     name = "Weibo_by_PersonPage"
@@ -15,7 +16,6 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
     custom_settings = SPIDERSETTING.Weibo_PersonPage_Spider
     followerlist_api_base_url = 'https://m.weibo.cn/api/container/getSecond?'
     Tweets_api_base_url = 'https://m.weibo.cn/api/container/getIndex?'
-
     def __init__(self):
         super().__init__()
         self.cookies = Cookies()
@@ -65,6 +65,12 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
         text = response.body.decode('utf-8')
         tree = etree.HTML(text)
         jsondata = json.loads(tree.xpath('body/script/text()')[0].split('render_data = [')[1].split('][0] ||')[0])
+        '''try:
+            jsondata = json.loads(tree.xpath('body/script/text()')[0].split('render_data = [')[1].split('][0] ||')[0])
+        except IndexError as e:
+            self.logger.info('Cannot parse url:{} '.format(response.url))
+            self.logger.info('Detail:{} '.format(e))
+            return'''
         statuse = jsondata['status']
         item = TweetsItem()
         item['Id'] = statuse['id']
@@ -72,8 +78,9 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
             item['Title'] = statuse['page_info']['page_title']
         except:
             item['Title'] = ''
-        item['Create_time'] = statuse['created_at']
-        item['Context'] = statuse['text']
+        item['Create_time'] =  utc2datetime(statuse['created_at'])
+        item['Context'] =statuse['text'] # json.dumps(statuse, ensure_ascii=False)# 
         item['Author'] = statuse['user']['screen_name']
         item['Source'] = statuse['source']
+        item["Url"] = response.url
         yield item

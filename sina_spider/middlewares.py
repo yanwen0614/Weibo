@@ -23,10 +23,13 @@ class SinaSpiderRetryMiddleware(RetryMiddleware):
 
     def process_response(self, request, response, spider):
         if response.status in self.retry_http_codes:
+            stats = spider.crawler.stats
             sleeptime = (1+request.meta.get('retry_times', 0))*random()*120
             self.logger.info('_______________Sleep__{}___sec________________'.format(sleeptime))
             self.logger.info(str(response.status)+'\t\t'+str(request.meta.get('retry_times', 0)))
             self.logger.info(str(response.url))
+            stats.inc_value('Forbidden/count')
+            stats.inc_value('Forbidden/reason_count/%s' % str(response.status))
             sleep(sleeptime)
         return super().process_response(request, response, spider)
 

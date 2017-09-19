@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
+import datetime
 # Scrapy settings for sina_spider project
 #
 # For simplicity, this file contains only settings considered important or
@@ -27,7 +28,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0
+DOWNLOAD_DELAY = 1+random.random()
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -53,7 +54,8 @@ DOWNLOAD_DELAY = 0
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'sina_spider.middlewares.SinaSpiderRetryMiddleware': 900,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'sina_spider.middlewares.SinaSpiderRetryMiddleware': 550,
 }
 
 # Enable or disable extensions
@@ -89,7 +91,10 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-RETRY_HTTP_CODES = [200,403, 408, 418, 414, 502, 503, 504]
+RETRY_HTTP_CODES = [403, 408, 418, 414, 502, 503, 504]
+
+
+LOG_FILE = '.\log\{}'.format(str(datetime.datetime.today()).replace(':','-').split('.')[0])
 
 
 

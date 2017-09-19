@@ -16,6 +16,7 @@ class TweetsItem(Item):
     Id = Field()
     Context = Field()
     Source = Field()
+    Url = Field()
 
 
 class TopicItem(Item):
