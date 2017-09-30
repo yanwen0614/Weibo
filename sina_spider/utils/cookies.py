@@ -48,7 +48,7 @@ class Cookies(object):
         elem_sub = driver.find_element_by_id("loginAction")
         elem_sub.click()  # 点击登陆
         time.sleep(3)
-        print(username+"'s cookies got")
+        self.logger.info(username+"'s cookies got")
         self._cookies[username] = driver.get_cookies()
 
     def _SaveCookies(self):

@@ -55,6 +55,8 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
             next_url = response.url+'&page=2'
         jsondata = json.loads(response.body.decode('utf-8'))
         statuses = jsondata['cards']
+        if statuses == []:
+            return 
         for statuse in statuses:
             if statuse['card_type'] != 9:
                 continue
