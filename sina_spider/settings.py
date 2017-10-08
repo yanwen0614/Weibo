@@ -94,7 +94,10 @@ DOWNLOADER_MIDDLEWARES = {
 RETRY_HTTP_CODES = [403, 408, 418, 414, 502, 503, 504]
 
 
-LOG_FILE = '.\log\{}'.format(str(datetime.datetime.today()).replace(':','-').split('.')[0])
+LOG_FILE = './log/{}'.format(str(datetime.datetime.today()).replace(':','-').split('.')[0])
+
+
+
 
 
 

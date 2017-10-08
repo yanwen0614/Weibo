@@ -24,5 +24,13 @@ class TopicItem(Item):
     Title = Field()
     Category = Field()
     Describe = Field()
-    Oid = Field()
+    Id = Field()
     Hotlevel = Field()
+    Time = Field()
+
+def main():
+    item = TopicItem()
+    pass
+
+if __name__ == '__main__':
+    main()
