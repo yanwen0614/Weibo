@@ -95,14 +95,4 @@ DOWNLOADER_MIDDLEWARES = {
 RETRY_HTTP_CODES = [403, 408, 418, 414, 502, 503, 504]
 
 
-<<<<<<< HEAD
 LOG_FILE = ossep.join(('.','log',(str(datetime.datetime.today()).replace(':','-').split('.')[0])))
-=======
-LOG_FILE = './log/{}'.format(str(datetime.datetime.today()).replace(':','-').split('.')[0])
-
-
-
-
-
-
->>>>>>> 8257d9875d5a04b9c1d7240cc3e903b242fd6aad

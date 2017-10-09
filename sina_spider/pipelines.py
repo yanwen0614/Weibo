@@ -11,9 +11,14 @@ from os import sep as ossep
 
 import pymysql
 
-import sina_spider.utils.Database as Utils_DB
-from sina_spider.conf import DATABASE, cfgfilename
-from sina_spider.items import TopicItem, TweetsItem
+try:
+    import sina_spider.utils.Database as Utils_DB
+    from sina_spider.conf import DATABASE, cfgfilename
+    from sina_spider.items import TopicItem, TweetsItem
+except ImportError:
+    import utils.Database as Utils_DB
+    from conf import DATABASE, cfgfilename
+    from items import TopicItem, TweetsItem
 
 
 class MyBaisePipeline(object):
@@ -22,15 +27,15 @@ class MyBaisePipeline(object):
     file = None
 
     def __init__(self):
-        self.cfgfile = configparser.ConfigParser()# read get last id
+        self.cfgfile = configparser.ConfigParser()  # read get last id
         self.cfgfile.read(cfgfilename)
         try:
-            self._last_item_id = self.cfgfile.get('last_item_id',__name__)
-        except :
+            self._last_item_id = self.cfgfile.get('last_item_id', __name__)
+        except:
             pass
             
     def open_spider(self, spider):    
-        self.file = open(ossep.join(('result','ProblemUrl'+__name__+'.jl')), 'a+', encoding='utf-8')
+        self.file = open(ossep.join(('.', 'result', 'ProblemUrl'+__name__+'.jl')), 'a+', encoding='utf-8')
         
     def process_item(self, item, spider):
         self._last_item_id = item['Id']
@@ -43,6 +48,7 @@ class MyBaisePipeline(object):
 
 class MyBaise_DataBase_Pipeline(object):
     _db = None
+    insert = ''
 
     def Create_createtable_sql(self, tablename, Key, **kwarg):
         return Utils_DB.Create_createtable_sql(tablename, Key, **kwarg)
@@ -53,14 +59,23 @@ class MyBaise_DataBase_Pipeline(object):
     def open_spider(self, spider):
         self.stats = spider.crawler.stats
         
-        self._db =  pymysql.connect(host='localhost',
+        self._db = pymysql.connect(host='localhost',
                                     user=DATABASE.user,
                                     password=DATABASE.pw,
                                     db=DATABASE.dbname,
                                     charset=DATABASE.charset,
                                     cursorclass=pymysql.cursors.DictCursor)
         self.cur = self._db.cursor()
-
+    
+    def process_item(self, item, spider):
+        try:
+            vls = [vl for vl in map(lambda x: item[x], sorted(item.fields.keys()))]
+            self.cur.execute(self.insert.format(*vls))
+            self._db.commit()
+        except:
+            self.stats.inc_value('cannot_parse/count')
+            self.file.writeline(item["Url"]+'\n')
+            self.file.flush()
 
     def create_table():
         pass
@@ -114,7 +129,7 @@ class TweetsPersonPageItem_DataBase_Pipeline(MyBaisePipeline, MyBaise_DataBase_P
 
     def __init__(self):
         super().__init__()
-        self.insert = self.Create_insert_sql('tweets',  sorted(TweetsItem().fields.keys()))
+        self.insert = self.Create_insert_sql('tweets',  *sorted(TweetsItem().fields.keys()))
 
     def open_spider(self, spider):
         super().open_spider(spider)
@@ -126,14 +141,9 @@ class TweetsPersonPageItem_DataBase_Pipeline(MyBaisePipeline, MyBaise_DataBase_P
 
     def process_item(self, item, spider):
         MyBaisePipeline.process_item(self, item, spider)
-        try:
-            self.cur.execute(self.insert.format(
-                            [item[key] for key in sorted(item.fields.keys()])))
-            self._db.commit()
-        except:
-            self.stats.inc_value('cannot_parse/count')
-            self.file.writeline(item["Url"]+'\n')
-            self.file.flush()
+        MyBaise_DataBase_Pipeline.process_item(self, item, spider)
+    
+
 
 
 class HotTopicItemPipeline(MyBaisePipeline):
@@ -161,7 +171,7 @@ class HotTopicItem_DataBase_Pipeline(MyBaisePipeline, MyBaise_DataBase_Pipeline)
 
     def __init__(self):
         super().__init__()
-        self.insert = self.Create_insert_sql('Hot_topic', sorted(TopicItem().fields.keys()))
+        self.insert = self.Create_insert_sql('Hot_topic', *sorted(TopicItem().fields.keys()))
 
     def open_spider(self, spider):
         MyBaise_DataBase_Pipeline.open_spider(self, spider)
@@ -172,12 +182,18 @@ class HotTopicItem_DataBase_Pipeline(MyBaisePipeline, MyBaise_DataBase_Pipeline)
         super().close_spider(spider)
 
     def process_item(self, item, spider):
-        MyBaisePipeline.process_item(item, spider)
-        try:
-            self.cur.execute(self.insert.format(
-                            [item[key] for key in sorted(item.fields.keys()])))
-            self._db.commit()
-        except:
-            self.stats.inc_value('cannot_parse/count')
-            self.file.writeline(item["Url"]+'\n')
-            self.file.flush()
+        MyBaisePipeline.process_item(self, item, spider)
+        MyBaise_DataBase_Pipeline.process_item(self, item, spider)
+
+
+
+def main():
+    db = pymysql.connect(host=DATABASE.host,
+                                    user=DATABASE.user,
+                                    password=DATABASE.pw,
+                                    db=DATABASE.dbname,
+                                    charset=DATABASE.charset,
+                                    cursorclass=pymysql.cursors.DictCursor)
+    print(db)
+if __name__ == '__main__':
+    main()

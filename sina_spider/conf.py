@@ -22,7 +22,7 @@ class SPIDERSETTING(object):
         'ITEM_PIPELINES' : { # 'sina_spider.pipelines.HotTopicItemPipeline': 300,
                              'sina_spider.pipelines.HotTopicItem_DataBase_Pipeline': 300,
                             },
-        'DUPEFILFTER_CLASS' : 'scrapy.dupefilters.BaseDupFilter'
+        'DUPEFILFTER_CLASS' : 'scrapy.dupefilters.BaseDupFilter',
         'LOG_LEVEL' : 'INFO',
         'JOBDIR' : 'Weibo_Hotpoint_Spider'
     }
@@ -30,7 +30,7 @@ class SPIDERSETTING(object):
     Weibo_PersonPage_Spider = {
         'ITEM_PIPELINES': {
                                # 'sina_spider.pipelines.TweetsPersonPageItemPipeline': 300,
-                                'sina_spider.pipelines.TweetsPersonPageItem_DataBase_Pipeline': 300
+                                'sina_spider.pipelines.TweetsPersonPageItem_DataBase_Pipeline': 300,
                                 
                             },
         'LOG_LEVEL': 'INFO',
