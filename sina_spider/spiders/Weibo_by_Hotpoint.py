@@ -58,6 +58,7 @@ class Weibo_Hotpoint_Spider(scrapy.Spider):
                         yield Request(redirect, callback=self.parse_topic_status)
                 yield Request(response.url+"&page=2", callback=self.parse)
                 yield Request(response.url+"&page=3", callback=self.parse)
+                last_time = datetime.now()
 
     def parse_topic_status(self):
         pass
