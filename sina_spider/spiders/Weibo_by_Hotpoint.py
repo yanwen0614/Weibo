@@ -24,11 +24,11 @@ class Weibo_Hotpoint_Spider(scrapy.Spider):
         item = TopicItem()
         item['Url'] = hot_topic['scheme']
         item['Category'] = hot_topic['category']
-        item['Describe'] = hot_topic['desc1']
+        item['context'] = hot_topic['desc1']
         item['Id'] = hot_topic['actionlog']['oid']
         item['Hotlevel'] = hot_topic['desc2']
         item['Title'] = hot_topic['card_type_name']
-        item['Time'] = str(nowtime())
+        item['Time'] = str(datetime.now())
         return item
 
     def parse(self, response):
@@ -45,20 +45,17 @@ class Weibo_Hotpoint_Spider(scrapy.Spider):
                 yield Request(redirect, callback=self.parse_topic_status)
 
     def parse_unlogin(self, response):
-        last_time = datetime.now()
-        while 1:
-            if (datetime.now()-last_time).total_seconds() > 600:
-                jsondata = json.loads(response.body.decode('utf-8'))
-                hot_topics = jsondata['cards'][1]['card_group']+jsondata['cards'][10]['card_group']
-                for hot_topic in hot_topics:
-                    item = self.GetItem(hot_topic)
-                    yield item
-                    if self.check_emergency(item['Title']):
-                        redirect = self.topics_api_base_url + hot_topic['scheme'].split('?')[1]
-                        yield Request(redirect, callback=self.parse_topic_status)
-                yield Request(response.url+"&page=2", callback=self.parse)
-                yield Request(response.url+"&page=3", callback=self.parse)
-                last_time = datetime.now()
+        
+        jsondata = json.loads(response.body.decode('utf-8'))
+        hot_topics = jsondata['cards'][1]['card_group']+jsondata['cards'][10]['card_group']
+        for hot_topic in hot_topics:
+            item = self.GetItem(hot_topic)
+            yield item
+            if self.check_emergency(item['Title']):
+                redirect = self.topics_api_base_url + hot_topic['scheme'].split('?')[1]
+                yield Request(redirect, callback=self.parse_topic_status)
+        yield Request(response.url+"&page=2", callback=self.parse)
+        yield Request(response.url+"&page=3", callback=self.parse)
 
     def parse_topic_status(self):
         pass

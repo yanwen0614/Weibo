@@ -23,7 +23,7 @@ class TopicItem(Item):
     Url = Field()
     Title = Field()
     Category = Field()
-    Describe = Field()
+    context = Field()
     Id = Field()
     Hotlevel = Field()
     Time = Field()

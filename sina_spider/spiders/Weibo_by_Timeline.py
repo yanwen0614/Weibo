@@ -8,6 +8,7 @@ from sina_spider.conf import SPIDERSETTING
 from sina_spider.items import TweetsItem
 from sina_spider.utils.cookies import Cookies
 from sina_spider.utils.user import UserSet
+from sina_spider.utils.extracttext import extracttext
 
 
 class Weibo_Timeline_Spider(scrapy.Spider):
@@ -49,7 +50,7 @@ class Weibo_Timeline_Spider(scrapy.Spider):
         except KeyError:
             item['Title'] = ''
         item['Create_time'] = statuse['created_at']
-        item['Context'] = statuse['text']
+        item['Context'] = extracttext(statuse['text'])
         item['Author'] = statuse['user']['screen_name']
         item['Source'] = statuse['source']
         return item

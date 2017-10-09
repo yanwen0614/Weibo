@@ -9,6 +9,7 @@ from sina_spider.conf import SPIDERSETTING
 from sina_spider.items import TweetsItem
 from sina_spider.utils.cookies import Cookies
 from sina_spider.utils.timeconvert import utc2datetime
+from sina_spider.utils.extracttext import extracttext
 
 class Weibo_PersonPage_Spider(scrapy.Spider):
     name = "Weibo_by_PersonPage"
@@ -81,7 +82,7 @@ class Weibo_PersonPage_Spider(scrapy.Spider):
         except:
             item['Title'] = ''
         item['Create_time'] =  utc2datetime(statuse['created_at'])
-        item['Context'] =statuse['text'] # json.dumps(statuse, ensure_ascii=False)# 
+        item['Context'] =extracttext(statuse['text']) # json.dumps(statuse, ensure_ascii=False)# 
         item['Author'] = statuse['user']['screen_name']
         item['Source'] = statuse['source']
         item["Url"] = response.url
