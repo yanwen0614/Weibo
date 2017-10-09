@@ -1,5 +1,5 @@
 from os import sep as ossep
-    _user_set = set()
+_user_set = set()
 
     def __init__(self):
         f = open(ossep.join('.','sina_spider','utils','userlist'), encoding='UTF-8')
