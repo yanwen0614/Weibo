@@ -4,7 +4,10 @@ import logging
 
 from selenium import webdriver
 
-from sina_spider.utils.user import UserSet
+try:
+    from sina_spider.utils.user import UserSet
+except ImportError:
+    from user import UserSet
 
 
 class Cookies(object):
@@ -35,7 +38,7 @@ class Cookies(object):
     def _getLoginCookies(self, username, password):
         cap = webdriver.DesiredCapabilities.PHANTOMJS
         cap['User-Agent'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1'
-        driver = webdriver.PhantomJS(executable_path='./sina_spider/utils/phantomjs.exe', desired_capabilities=cap)
+        driver = webdriver.PhantomJS(desired_capabilities=cap)
         driver.get("https://passport.weibo.cn/signin/login")
         time.sleep(2)
         #driver.get_screenshot_as_file('00.png')
