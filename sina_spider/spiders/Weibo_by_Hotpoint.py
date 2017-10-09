@@ -7,7 +7,7 @@ from scrapy.http import Request
 
 from sina_spider.conf import SPIDERSETTING
 from sina_spider.items import TopicItem
-import datetime.datetime.now as nowtime
+from datetime import datetime
 
 
 class Weibo_Hotpoint_Spider(scrapy.Spider):
@@ -45,9 +45,9 @@ class Weibo_Hotpoint_Spider(scrapy.Spider):
                 yield Request(redirect, callback=self.parse_topic_status)
 
     def parse_unlogin(self, response):
-        last_time = nowtime
+        last_time = datetime.now()
         while 1:
-            if (nowtime()-last_time).total_seconds() > 600:
+            if (datetime.now()-last_time).total_seconds() > 600:
                 jsondata = json.loads(response.body.decode('utf-8'))
                 hot_topics = jsondata['cards'][1]['card_group']+jsondata['cards'][10]['card_group']
                 for hot_topic in hot_topics:
