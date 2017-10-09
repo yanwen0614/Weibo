@@ -3,7 +3,7 @@ import pickle
 import logging
 
 from selenium import webdriver
-
+from os import sep as ossep
 try:
     from sina_spider.utils.user import UserSet
 except ImportError:
@@ -11,11 +11,13 @@ except ImportError:
 
 
 class Cookies(object):
+
+    cookiespath = ossep.join(('.','sina_spider','data','cookies'))
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self._cookies = dict()
         try:
-            with open('.\sina_spider\data\cookies', 'rb') as f:
+            with open(self.cookiespath, 'rb') as f:
                 self._cookies = pickle.load(f)
             if(time.time() - self._cookies['time']>3600*24):
                 self._updateCookies()
@@ -55,7 +57,7 @@ class Cookies(object):
         self._cookies[username] = driver.get_cookies()
 
     def _SaveCookies(self):
-        with open('.\sina_spider\data\cookies', 'wb') as f:
+        with open(self.cookiespath, 'wb') as f:
             pickle.dump(self._cookies, f)
 
 def main():
