@@ -132,7 +132,8 @@ class TweetsPersonPageItem_DataBase_Pipeline(MyBaisePipeline, MyBaise_DataBase_P
         self.insert = self.Create_insert_sql('tweets',  *sorted(TweetsItem().fields.keys()))
 
     def open_spider(self, spider):
-        super().open_spider(spider)
+        MyBaisePipeline.open_spider(self, spider)
+        MyBaise_DataBase_Pipeline.open_spider(self, spider)
        
     def close_spider(self, spider):
         self._db.close()
@@ -174,8 +175,9 @@ class HotTopicItem_DataBase_Pipeline(MyBaisePipeline, MyBaise_DataBase_Pipeline)
         self.insert = self.Create_insert_sql('Hot_topic', *sorted(TopicItem().fields.keys()))
 
     def open_spider(self, spider):
+        MyBaisePipeline.open_spider(self, spider)
         MyBaise_DataBase_Pipeline.open_spider(self, spider)
-       
+        
     def close_spider(self, spider):
         self._db.close()
         self.file.close()
