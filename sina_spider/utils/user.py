@@ -1,8 +1,8 @@
-class UserSet(object):
+from os import sep as ossep
     _user_set = set()
 
     def __init__(self):
-        f = open('.\\sina_spider\\utils\\userlist', encoding='UTF-8')
+        f = open(ossep.join('.','sina_spider','utils','userlist'), encoding='UTF-8')
         for line in f.readlines():
             self.add_user(*line[:-1].rsplit(' '))  
             '''add your account information at userlist file 
