@@ -15,9 +15,6 @@ process = CrawlerProcess(get_project_settings())
 process.crawl(Weibo_Hotpoint_Spider)
 process.crawl(Weibo_PersonPage_Spider)
 process.start()
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> 8257d9875d5a04b9c1d7240cc3e903b242fd6aad

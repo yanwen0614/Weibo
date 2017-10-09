@@ -13,3 +13,4 @@ TweetsItemsPersonPage.jl
 TweetsItemsTimeline.jl
 sina_spider/utils/phantomjs.exe
 log/
+Weibo_PersonPage_Spider/requests.seen
